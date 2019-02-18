@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IamcoreProject.Configuration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IamcoreProject.Controllers
@@ -10,6 +11,18 @@ namespace IamcoreProject.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        public ValuesController(IWritableOptions<ConfigModel> options)
+        {
+            var valueString = options.Value.FieldString;
+            var valueInt = options.Value.Fieldint;
+
+            options.Update(t =>
+            {
+                t.FieldString = "value1";
+                t.Fieldint = 1;
+            });
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
