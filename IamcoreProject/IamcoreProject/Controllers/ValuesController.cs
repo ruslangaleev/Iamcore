@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IamcoreProject.Configuration;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IamcoreProject.Controllers
@@ -23,8 +24,13 @@ namespace IamcoreProject.Controllers
             });
         }
 
-        // GET api/values
+        /// <summary>
+        /// Вернет значения
+        /// </summary>
+        /// <returns>Коллекция значений.</returns>
+        /// <response code="200">Вернет список значений.</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<string>> Get()
         {
             return new string[] { "value1", "value2" };
@@ -37,10 +43,38 @@ namespace IamcoreProject.Controllers
             return "value";
         }
 
-        // POST api/values
+        /// <summary>
+        /// Конкатенирует строку.
+        /// </summary>
+        /// <remarks>
+        /// Образец запроса:
+        ///
+        ///     POST /api/Values/
+        ///     {
+        ///        value
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="value">Значение для конкатенации.</param>
+        /// <returns>Вернет сконтаренированную строку.</returns>
+        /// <response code="200">Успешно сконтактенированная строка.</response>
+        /// <response code="400">Значение пустое.</response> 
         [HttpPost]
-        public void Post([FromBody] string value)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult Post([FromBody] string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return BadRequest();
+            }
+
+            return Ok(new
+            {
+                CreateAt = DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss"),
+                UpdateAt = DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss"),
+                Value = $"{value}{value}"
+            });
         }
 
         // PUT api/values/5
